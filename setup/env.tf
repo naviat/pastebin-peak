@@ -48,7 +48,7 @@ resource "aws_instance" "jenkins_instance" {
   key_name               = var.pub_key_name
 
   root_block_device {
-    volume_size = "10"
+    volume_size = "20"
   }
 
   connection {
