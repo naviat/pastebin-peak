@@ -77,5 +77,6 @@ variable "dev_host_label" {
 }
 
 variable "ssh_key_path" {
-    default = "~/.ssh/id_rsa"
+    type = string
+    //default = "~/.ssh/id_rsa"
 }
