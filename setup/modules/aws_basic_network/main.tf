@@ -66,6 +66,14 @@ resource "aws_default_security_group" "aws_core_dsg" {
   }
 
   ingress {
+    protocol    = "tcp"
+    from_port   = 8080
+    to_port     = 8080
+    cidr_blocks = ["0.0.0.0/0"]
+    description      = "Jenkins open to GitHub"
+  }
+
+  ingress {
     protocol    = "-1"
     self        = false
     from_port   = 0
