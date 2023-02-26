@@ -1,0 +1,74 @@
+- name: Install Docker dependencies
+  apt:
+      name: "{{ item }}"
+      state: present
+      update_cache: yes
+  with_items:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+  tags:
+      - docker
+
+- name: Add Docker repository key
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Docker repository
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Docker
+  apt:
+    name: docker-ce
+    state: present
+
+- name: Install docker-compose
+  get_url: 
+    url : https://github.com/docker/compose/releases/download/1.25.1-rc1/docker-compose-Linux-x86_64
+    dest: /usr/local/bin/docker-compose
+    mode: 'u+x,g+x'
+
+- name: Add deployer user to Docker group
+  user:
+    name: deployer
+    groups: docker
+    append: yes
+
+- name: Add Jenkins repository key
+  apt_key:
+    url: https://pkg.jenkins.io/debian/jenkins.io.key
+    state: present
+
+- name: Add Jenkins repository
+  apt_repository:
+    repo: deb https://pkg.jenkins.io/debian-stable binary/
+    state: present
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Install Java
+  apt:
+    name: openjdk-17-jdk
+    state: present
+
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: present
+
+- name: Start Jenkins service on boot
+  remote_user: deployer
+  service:
+    name: jenkins
+    enabled: yes
+    state: started

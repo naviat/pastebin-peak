@@ -1,0 +1,7 @@
+- name: Create deployer user
+  become: yes
+  become_method: sudo
+  user:
+    name: deployer
+    state: present
+  

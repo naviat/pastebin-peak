@@ -1,0 +1,9 @@
+---
+- name: Deploy Jenkins
+  hosts: terra_ansible_host
+  become: true
+  gather_facts: false
+
+  roles:
+    - create_deployer_user
+    - install_jenkins_docker
