@@ -2,3 +2,4 @@
 .terraform.lock.hcl
 play.yml-e
 hosts
+terraform
