@@ -7,3 +7,5 @@
   roles:
     - create_deployer_user
     - install_jenkins_docker
+    - install_chromedriver_selenium
+    - install_chrome_debian

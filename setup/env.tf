@@ -46,7 +46,6 @@ resource "aws_instance" "jenkins_instance" {
   subnet_id              = module.aws_basic_network.aws_subnet_id
   vpc_security_group_ids = ["${module.aws_basic_network.aws_default_sg_id}"]
   key_name               = var.pub_key_name
-
   root_block_device {
     volume_size = "20"
   }
@@ -91,12 +90,10 @@ module "aws_iam_user" {
 }
 
 module "aws_iam_user_policy" {
-
   source              = "./modules/aws_iam_user_policy"
   aws_iam_policy_file = file("./modules/aws_iam_user_policy/policy/devr.json")
   aws_iam_policy_name = "DEVR-POLICY"
   aws_iam_user_name   = module.aws_iam_user.aws_user_name
-
 }
 
 
@@ -137,21 +134,23 @@ resource "null_resource" "ConfigureAnsibleLabelVariable" {
 }
 
 resource "null_resource" "ProvisionRemoteHostsIpToAnsibleHosts" {
-  count = "${var.server_count}"
+  count = var.server_count
   connection {
-    type = "ssh"
-    user = "ubuntu"
-    host = "${element(aws_instance.jenkins_instance.*.public_ip, count.index)}"
-    private_key = "${file("${var.ssh_key_path}")}"
+    type        = "ssh"
+    user        = "ubuntu"
+    host        = element(aws_instance.jenkins_instance.*.public_ip, count.index)
+    private_key = file("${var.ssh_key_path}")
   }
   provisioner "remote-exec" {
     inline = [
-      "sudo apt update -y"
+      "sleep 10",
+      "sudo apt update -y",
     ]
   }
   provisioner "local-exec" {
     command = "echo ${element(aws_instance.jenkins_instance.*.public_ip, count.index)} >> hosts"
   }
+  depends_on = [aws_instance.jenkins_instance]
 }
 
 resource "null_resource" "ModifyApplyAnsiblePlayBook" {

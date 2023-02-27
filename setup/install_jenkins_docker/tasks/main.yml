@@ -8,6 +8,7 @@
       - ca-certificates
       - curl
       - software-properties-common
+      - unzip
   tags:
       - docker
 
@@ -41,6 +42,12 @@
   user:
     name: deployer
     groups: docker
+    append: yes
+
+- name: Add deployer user to Sudo group
+  user:
+    name: deployer
+    groups: sudo
     append: yes
 
 - name: Add Jenkins repository key
@@ -79,3 +86,10 @@
     name: jenkins
     enabled: yes
     state: started
+
+- name: restart Jenkins
+  remote_user: deployer
+  service:
+    name: jenkins
+    state: restarted
+    enabled: yes
