@@ -56,6 +56,12 @@ resource "aws_default_security_group" "aws_core_dsg" {
     to_port     = 0
     cidr_blocks = ["${chomp(data.http.my_ip_address.response_body)}/32"]
   }
+  ingress {
+      protocol    = "tcp"
+      from_port   = 80
+      to_port     = 80
+      cidr_blocks = ["0.0.0.0/0"]
+    }
 
   ingress {
     protocol    = "-1"
